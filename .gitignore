@@ -1,0 +1,14 @@
+.vs/
+Mines2.0/.vs/
+[Dd]ebug/
+[Bb]in/
+[Oo]bj
+[Ll]og/
+[Ll]ogs/
+Mines2.0/Mines2.0/obj/
+Mines2.0/Mines2.0/bin/
+!Mines2.0/Mines2.0/bin/Debug/net6.0-windows/Entity/*
+!Mines2.0/Mines2.0/bin/Debug/net6.0-windows/Mines2.0.dll
+!Mines2.0/Mines2.0/bin/Debug/net6.0-windows/Mines2.0.runtimeconfig.json
+!Mines2.0/Mines2.0/bin/Debug/net6.0-windows/Mines2.0.exe
+/.idea
