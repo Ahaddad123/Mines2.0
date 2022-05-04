@@ -24,6 +24,7 @@ namespace Mines2._0.Control
         public int maximumPlayerTurns { get;  set; }
         private static GameData data = new GameData();
         private TextBox outputTextBox;
+        private int numberOfTreasuresWon;
 
 
         /// <summary>
@@ -35,6 +36,7 @@ namespace Mines2._0.Control
             playerTurns = 0;
             caveSeed = -1;
             this.outputTextBox = output;
+            numberOfTreasuresWon = 0;
         }
 
 
@@ -117,6 +119,10 @@ namespace Mines2._0.Control
             }
             drawTreasureMarker(G, pen, xOffset,yOffset, cave);
             drawItemMarker(G, pen, xOffset, yOffset, cave);
+            if (cave.hasGamblingMachine)
+            {
+                drawGamblingMarker(G, pen, xOffset, yOffset, cave);
+            }
         }
         /// <summary>
         /// Drawing Obstacles on the map using an X
@@ -230,6 +236,25 @@ namespace Mines2._0.Control
                     cavePosX + 13, cavePosY + 15);
             }
         }
+        /// <summary>
+        /// Draws the gambling machine marker in a room.
+        /// </summary>
+        /// <param name="G">Graphics used to draw with</param>
+        /// <param name="pen">Pen used to draw</param>
+        /// <param name="cavePosX">Xcord of where to paint</param>
+        /// <param name="cavePosY">YCord of where to paint</param>
+        public void drawGamblingMarker(Graphics G, Pen pen, int cavePosX, int cavePosY, Cave cave)
+        {
+            G.DrawLine(pen, cavePosX + 30, cavePosY + 10,
+                cavePosX + 36, cavePosY + 10);
+            G.DrawLine(pen, cavePosX + 30, cavePosY + 10,
+                cavePosX + 30, cavePosY + 15);
+            G.DrawLine(pen, cavePosX + 30, cavePosY + 15,
+                cavePosX + 36, cavePosY + 15);
+            G.DrawLine(pen, cavePosX + 36, cavePosY + 10,
+                cavePosX + 36, cavePosY + 15);
+        }
+
         /// <summary>
         /// Paints corridors of adjacent caves to the cave that is being passed
         /// </summary>
@@ -475,234 +500,275 @@ namespace Mines2._0.Control
         /// <param name="textBox">Textbox to write to</param>
         public void parseCommand(string userCommand)
         {
-            char command = userCommand[0];
-            if(!dropItemFlag && !dropTreasureFlag)
+            if (userCommand.Length > 1)
             {
-                switch (Char.ToUpper(command))
-                {
-                    case 'N':           // Player move to the north
-                        if (player.move((int)Directions.NORTH))
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
-                            playerTurns++;
-                        }
-                        else
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
-                        printCaveInformation();
-                        break;
-                    case 'E':           // Player move to the east
-                        if (player.move((int)Directions.EAST))
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
-                            playerTurns++;
-                        }
-                        else
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
-                        }
-                        printCaveInformation();
-                        break;
-                    case 'S':           // Player move to the south
-                        if (player.move((int)Directions.SOUTH))
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
-                            playerTurns++;
-                        }
-                        else
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
-                        printCaveInformation();
-                        break;
-                    case 'W':           // Player move to the west
-                        if (player.move((int)Directions.WEST))
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
-                            playerTurns++;
-                        }
-                        else
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
-                        printCaveInformation();
-                        break;
-                    case 'U':           // Player move up a level
-                        if (player.move((int)Directions.UP))
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
-                            playerTurns++;
-                        }
-                        else
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
-                        printCaveInformation();
-                        break;
-                    case 'D':           // Player move down a level
-                        if (player.move((int)Directions.DOWN))
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
-                            playerTurns++;
-                        }
-                        else
-                            IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
-                        printCaveInformation();
-                        break;
-                    case 'C':           // Player carries all items in the room. They are placed into the inventory.
-                        foreach (Item item in player.GetCaveLocation().items)
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox($"You picked up a { item.getDescription()}", outputTextBox);
-                        }
-                        player.pickUpItems();
-                        foreach (Treasure treasure in player.GetCaveLocation().treasures)
-                        {
-                            IOManager.getInstance().getOutputStream().writeToTextBox($"You picked up a { treasure.getDescription()}", outputTextBox);
-                        }
-                        player.pickUpTreasure();
-               
-                        printCaveInformation();
-                        break;
-                    case 'L':           // Leave item in current room that user selects.
-                        IOManager.getInstance().getOutputStream().writeToTextBox("Select item to drop (enter number next to item)", outputTextBox);
-
-                        if (player.getItemInventory().Count != 0)
-                        {
-                            dropItemFlag = true;
-                            int index = 1;
-                            foreach (Item item in player.getItemInventory())
-                            {
-                                IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getWeapon(item.getItemId())}", outputTextBox);
-                                index++;
-                            }
-                        }
-                        break;
-                    case 'K':           //Leave treasure in current room that user selects
-                        IOManager.getInstance().getOutputStream().writeToTextBox("Select treasure to drop (enter number next to treasure)", outputTextBox);
-                        if (player.getTreasureInventory().Count != 0)
-                        {
-                            dropTreasureFlag = true;
-                            int index = 1;
-                            foreach (Treasure treasure in player.getTreasureInventory())
-                            {
-                                IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getTreasure(treasure.getTreasureId())}", outputTextBox);
-                                index++;
-                            }
-                            if (mine[0].treasures.Count() == TREASURE_TO_GENERATE)
-                            {
-                                IOManager.getInstance().getOutputStream().writeToTextBox("Congratulations, you win!", outputTextBox);
-                                parseCommand("Q");
-                            }    
-                        }
-                        break;
-                    case 'P':           // Display the points the player has scored.
-                                        //int points = player.calculatePoints(numRooms, numTreasures, playerTurns);
-                        Points();
-                        printCaveInformation();
-                        break;
-                    case 'O':           // Display help for the player to exit the mine.
-                        IOManager.getInstance().getOutputStream().writeToTextBox("That feature hasn't been implemented yet :(", outputTextBox);
-                        break;
-                    case 'H':           // Display help: a list of commands and description of the game.
-                        displayHelp();
-                        printCaveInformation();
-                        break;
-                    case 'Q':
-                        IOManager.getInstance().getOutputStream().writeToTextBox("Thanks for playing! Here are your results: ", outputTextBox);
-                        Points();
-                        IOManager.getInstance().getOutputStream().writeToTextBox("Game will close automatically in 10 seconds", outputTextBox);
-                        Thread.Sleep(10000);
-                        Environment.Exit(0);
-                        break;
-
-                    default:            // By default any command that is not handled prior to now is not a valid command.
-                        IO.getOutputStream().writeToTextBox("I don't recognize that command, " +
-                            "press 'H' to see a list of commands", outputTextBox);
-                        return;
-                }
+                IO.getOutputStream().writeToTextBox("Invalid command, please enter a single character.", outputTextBox);
             }
-            else if(dropItemFlag)
+            else
             {
-                //Item to be dropped
-                int itemToDrop = 0;
-                try
+                char command = userCommand[0];
+                if (!dropItemFlag && !dropTreasureFlag)
                 {
-                    //Converts players command from string to int
-                    itemToDrop = Convert.ToInt32(userCommand);
-                    //If the user enters a valid number
-                    if (itemToDrop <= player.getItemInventory().Count() && itemToDrop > 0)
+                    switch (Char.ToUpper(command))
                     {
-                        IO.getOutputStream().writeToTextBox($"You dropped { player.getItemInventory().ElementAt(itemToDrop - 1).getDescription() } here.", outputTextBox);
-                        player.dropItem(itemToDrop - 1);
-                        dropItemFlag = false;
-                        printCaveInformation();
-                    }
-                    //User wants to exit drop dialog
-                    else if (itemToDrop < 0)
-                    {
-                        dropItemFlag = false;
-                    }
-                    //Invalid number entered
-                    else
-                    {
-                        IO.getOutputStream().writeToTextBox("Invalid index of item. Please enter a proper index or -1 to exit the drop item prompt", outputTextBox);
-                        IOManager.getInstance().getOutputStream().writeToTextBox("Select item to drop (enter number next to item)", outputTextBox);
-                        //Re lists the items in players inventory
-                        if (player.getItemInventory().Count != 0)
-                        {
-                            dropItemFlag = true;
-                            int index = 1;
-                            foreach (Item item in player.getItemInventory())
+                        case 'N':           // Player move to the north
+                            if (player.move((int)Directions.NORTH))
                             {
-                                IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getWeapon(item.getItemId())}", outputTextBox);
-                                index++;
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
+                                playerTurns++;
+                            }
+                            else
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
+                            printCaveInformation();
+                            break;
+                        case 'E':           // Player move to the east
+                            if (player.move((int)Directions.EAST))
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
+                                playerTurns++;
+                            }
+                            else
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
+                            }
+                            printCaveInformation();
+                            break;
+                        case 'S':           // Player move to the south
+                            if (player.move((int)Directions.SOUTH))
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
+                                playerTurns++;
+                            }
+                            else
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
+                            printCaveInformation();
+                            break;
+                        case 'W':           // Player move to the west
+                            if (player.move((int)Directions.WEST))
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
+                                playerTurns++;
+                            }
+                            else
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
+                            printCaveInformation();
+                            break;
+                        case 'U':           // Player move up a level
+                            if (player.move((int)Directions.UP))
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
+                                playerTurns++;
+                            }
+                            else
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
+                            printCaveInformation();
+                            break;
+                        case 'D':           // Player move down a level
+                            if (player.move((int)Directions.DOWN))
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You moved into the next cave", outputTextBox);
+                                playerTurns++;
+                            }
+                            else
+                                IOManager.getInstance().getOutputStream().writeToTextBox("You cannot move that way", outputTextBox);
+                            printCaveInformation();
+                            break;
+                        case 'C':           // Player carries all items in the room. They are placed into the inventory.
+                            foreach (Item item in player.GetCaveLocation().items)
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox($"You picked up a { item.getDescription()}", outputTextBox);
+                            }
+                            player.pickUpItems();
+                            foreach (Treasure treasure in player.GetCaveLocation().treasures)
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox($"You picked up a { treasure.getDescription()}", outputTextBox);
+                            }
+                            player.pickUpTreasure();
+
+                            printCaveInformation();
+                            break;
+                        case 'L':           // Leave item in current room that user selects.
+                            IOManager.getInstance().getOutputStream().writeToTextBox("Select item to drop (enter number next to item)", outputTextBox);
+
+                            if (player.getItemInventory().Count != 0)
+                            {
+                                dropItemFlag = true;
+                                int index = 1;
+                                foreach (Item item in player.getItemInventory())
+                                {
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getWeapon(item.getItemId())}", outputTextBox);
+                                    index++;
+                                }
+                            }
+                            break;
+                        case 'K':           //Leave treasure in current room that user selects
+                            IOManager.getInstance().getOutputStream().writeToTextBox("Select treasure to drop (enter number next to treasure)", outputTextBox);
+                            if (player.getTreasureInventory().Count != 0)
+                            {
+                                dropTreasureFlag = true;
+                                int index = 1;
+                                foreach (Treasure treasure in player.getTreasureInventory())
+                                {
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getTreasure(treasure.getTreasureId())}", outputTextBox);
+                                    index++;
+                                }
+                                if (mine[0].treasures.Count() == TREASURE_TO_GENERATE)
+                                {
+                                    IOManager.getInstance().getOutputStream().writeToTextBox("Congratulations, you win!", outputTextBox);
+                                    parseCommand("Q");
+                                }
+                            }
+                            break;
+                        case 'P':           // Display the points the player has scored.
+                                            //int points = player.calculatePoints(numRooms, numTreasures, playerTurns);
+                            Points();
+                            printCaveInformation();
+                            break;
+                        case 'O':           // Display help for the player to exit the mine.
+                            IOManager.getInstance().getOutputStream().writeToTextBox("That feature hasn't been implemented yet :(", outputTextBox);
+                            break;
+                        case 'H':           // Display help: a list of commands and description of the game.
+                            displayHelp();
+                            printCaveInformation();
+                            break;
+                        case 'Q':
+                            IOManager.getInstance().getOutputStream().writeToTextBox("Thanks for playing! Here are your results: ", outputTextBox);
+                            Points();
+                            IOManager.getInstance().getOutputStream().writeToTextBox("Game will close automatically in 10 seconds", outputTextBox);
+                            Thread.Sleep(10000);
+                            Environment.Exit(0);
+                            break;
+                        case 'Y':
+                            if (player.GetCaveLocation().hasGamblingMachine && player.getTreasureInventory().Count != 0)
+                            {
+                                player.getTreasureInventory().RemoveAt(0);
+                                Random r = new Random();
+                                long numberOfTreasures = r.NextInt64(5) - 1;
+                                if (numberOfTreasures < 0)
+                                {
+                                    if (player.getTreasureInventory().Count() != 0)
+                                    {
+                                        player.getTreasureInventory().RemoveAt(0);
+                                        IOManager.getInstance().getOutputStream().writeToTextBox($"Tough luck! You have lost another treasure. :(", outputTextBox);
+                                    }
+                                    else
+                                    {
+                                        IOManager.getInstance().getOutputStream().writeToTextBox($"Tough luck! You don't win any treasures. :(", outputTextBox);
+                                    }
+                                }
+                                else if (numberOfTreasures == 0)
+                                {
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"Tough luck! You don't win any treasures. :(", outputTextBox);
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < numberOfTreasures; i++)
+                                    {
+                                        player.getTreasureInventory().Add(new Treasure(numberOfTreasuresWon + 18, "another bag full of gold coins"));
+                                        numberOfTreasuresWon++;
+                                    }
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"Congratulations! You won " + numberOfTreasures + " more treasures! :)", outputTextBox);
+                                }
+                            }
+                            printCaveInformation();
+                            break;
+
+                        default:            // By default any command that is not handled prior to now is not a valid command.
+                            IO.getOutputStream().writeToTextBox("I don't recognize that command, " +
+                                "press 'H' to see a list of commands", outputTextBox);
+                            return;
+                    }
+                }
+                else if (dropItemFlag)
+                {
+                    //Item to be dropped
+                    int itemToDrop = 0;
+                    try
+                    {
+                        //Converts players command from string to int
+                        itemToDrop = Convert.ToInt32(userCommand);
+                        //If the user enters a valid number
+                        if (itemToDrop <= player.getItemInventory().Count() && itemToDrop > 0)
+                        {
+                            IO.getOutputStream().writeToTextBox($"You dropped { player.getItemInventory().ElementAt(itemToDrop - 1).getDescription() } here.", outputTextBox);
+                            player.dropItem(itemToDrop - 1);
+                            dropItemFlag = false;
+                            printCaveInformation();
+                        }
+                        //User wants to exit drop dialog
+                        else if (itemToDrop < 0)
+                        {
+                            dropItemFlag = false;
+                        }
+                        //Invalid number entered
+                        else
+                        {
+                            IO.getOutputStream().writeToTextBox("Invalid index of item. Please enter a proper index or -1 to exit the drop item prompt", outputTextBox);
+                            IOManager.getInstance().getOutputStream().writeToTextBox("Select item to drop (enter number next to item)", outputTextBox);
+                            //Re lists the items in players inventory
+                            if (player.getItemInventory().Count != 0)
+                            {
+                                dropItemFlag = true;
+                                int index = 1;
+                                foreach (Item item in player.getItemInventory())
+                                {
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getWeapon(item.getItemId())}", outputTextBox);
+                                    index++;
+                                }
                             }
                         }
                     }
-                }
-                catch
-                {
-                    //Invalid input entered
-                    IO.getOutputStream().writeToTextBox("Not a valid number!", outputTextBox);
-                }
-                
-                
-            }
-            else if(dropTreasureFlag)
-            {
-                //Treasure to drop
-                int treasureToDrop = 0;
-                try
-                {
-                    //Converts players command from string to int
-                    treasureToDrop = Convert.ToInt32(userCommand);
-                    if (treasureToDrop <= player.getTreasureInventory().Count() && treasureToDrop > 0)
+                    catch
                     {
-                        IO.getOutputStream().writeToTextBox($"You dropped { player.getTreasureInventory().ElementAt(treasureToDrop - 1).getDescription() } here.", outputTextBox);
-                        player.dropTreasures(treasureToDrop - 1);
-                        dropTreasureFlag = false;
-                        printCaveInformation();
+                        //Invalid input entered
+                        IO.getOutputStream().writeToTextBox("Not a valid number!", outputTextBox);
                     }
-                    //User wants to exit drop dialog
-                    else if (treasureToDrop < 0)
+
+
+                }
+                else if (dropTreasureFlag)
+                {
+                    //Treasure to drop
+                    int treasureToDrop = 0;
+                    try
                     {
-                        dropTreasureFlag = false;
-                    }
-                    //Invalid number entered
-                    else
-                    {
-                        IO.getOutputStream().writeToTextBox("Invalid index of treasure. Please enter a proper index or -1 to exit the drop item prompt", outputTextBox);
-                        IOManager.getInstance().getOutputStream().writeToTextBox("Select treasure to drop (enter number next to item)", outputTextBox);
-                        //Re lists the treasures in players inventory
-                        if (player.getTreasureInventory().Count != 0)
+                        //Converts players command from string to int
+                        treasureToDrop = Convert.ToInt32(userCommand);
+                        if (treasureToDrop <= player.getTreasureInventory().Count() && treasureToDrop > 0)
                         {
-                            dropTreasureFlag = true;
-                            int index = 1;
-                            foreach (Treasure treasure in player.getTreasureInventory())
+                            IO.getOutputStream().writeToTextBox($"You dropped { player.getTreasureInventory().ElementAt(treasureToDrop - 1).getDescription() } here.", outputTextBox);
+                            player.dropTreasures(treasureToDrop - 1);
+                            dropTreasureFlag = false;
+                            printCaveInformation();
+                        }
+                        //User wants to exit drop dialog
+                        else if (treasureToDrop < 0)
+                        {
+                            dropTreasureFlag = false;
+                        }
+                        //Invalid number entered
+                        else
+                        {
+                            IO.getOutputStream().writeToTextBox("Invalid index of treasure. Please enter a proper index or -1 to exit the drop item prompt", outputTextBox);
+                            IOManager.getInstance().getOutputStream().writeToTextBox("Select treasure to drop (enter number next to item)", outputTextBox);
+                            //Re lists the treasures in players inventory
+                            if (player.getTreasureInventory().Count != 0)
                             {
-                                IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getTreasure(treasure.getTreasureId())}", outputTextBox);
-                                index++;
+                                dropTreasureFlag = true;
+                                int index = 1;
+                                foreach (Treasure treasure in player.getTreasureInventory())
+                                {
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"{index + " : " + data.getTreasure(treasure.getTreasureId())}", outputTextBox);
+                                    index++;
+                                }
                             }
                         }
                     }
-                }
-                catch
-                {   
-                    //Invalid input entered
-                    IO.getOutputStream().writeToTextBox("Not a valid number! Please enter a proper index or -1 to exit the drop item prompt", outputTextBox);
+                    catch
+                    {
+                        //Invalid input entered
+                        IO.getOutputStream().writeToTextBox("Not a valid number! Please enter a proper index or -1 to exit the drop item prompt", outputTextBox);
+                    }
                 }
             }
         }
@@ -745,6 +811,19 @@ namespace Mines2._0.Control
             if (adjacentCaves[5]?.caveObstacle is not null && adjacentCaves[5].caveObstacle.getLivingStatus())
             {
                 outputStream.writeToTextBox($"The cave up is guarded by a {adjacentCaves[5].caveObstacle.getDescription()}.", outputTextBox);
+            }
+            if (currentCave.hasGamblingMachine)
+            {
+                outputStream.writeToTextBox($"There is a gambling machine in this room.", outputTextBox);
+                if(player.getTreasureInventory().Count == 0)
+                {
+                    outputStream.writeToTextBox($"But you have no treasures to gamble, so you cannot use it.", outputTextBox);
+                }
+                else
+                {
+                    outputStream.writeToTextBox($"If you would like to wage a treasure for a chance to gain more treasures, enter 'Y'.", outputTextBox);
+                    outputStream.writeToTextBox($"Otherwise, continue with your usual gameplay.", outputTextBox);
+                }
             }
         }
         /// <summary>
@@ -886,6 +965,12 @@ namespace Mines2._0.Control
                 descriptions.RemoveAt(descriptionID);
             }
             mine[0].descriptionID = descriptions[0];
+            Random r = new Random();
+            long numberOfGamblingMachines = r.NextInt64(5) + 1;
+            for(int i = 0; i < numberOfGamblingMachines; i++)
+            {
+                mine[r.NextInt64(mine.Length)].hasGamblingMachine = true;
+            }
         }
 
         /// <summary>
