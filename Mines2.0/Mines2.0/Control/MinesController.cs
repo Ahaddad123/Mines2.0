@@ -24,6 +24,7 @@ namespace Mines2._0.Control
         public int maximumPlayerTurns { get;  set; }
         private static GameData data = new GameData();
         private TextBox outputTextBox;
+        private int numberOfTreasuresWon;
 
 
         /// <summary>
@@ -35,6 +36,7 @@ namespace Mines2._0.Control
             playerTurns = 0;
             caveSeed = -1;
             this.outputTextBox = output;
+            numberOfTreasuresWon = 0;
         }
 
 
@@ -117,6 +119,10 @@ namespace Mines2._0.Control
             }
             drawTreasureMarker(G, pen, xOffset,yOffset, cave);
             drawItemMarker(G, pen, xOffset, yOffset, cave);
+            if (cave.hasGamblingMachine)
+            {
+                drawGamblingMarker(G, pen, xOffset, yOffset, cave);
+            }
         }
         /// <summary>
         /// Drawing Obstacles on the map using an X
@@ -230,6 +236,25 @@ namespace Mines2._0.Control
                     cavePosX + 13, cavePosY + 15);
             }
         }
+        /// <summary>
+        /// Draws the gambling machine marker in a room.
+        /// </summary>
+        /// <param name="G">Graphics used to draw with</param>
+        /// <param name="pen">Pen used to draw</param>
+        /// <param name="cavePosX">Xcord of where to paint</param>
+        /// <param name="cavePosY">YCord of where to paint</param>
+        public void drawGamblingMarker(Graphics G, Pen pen, int cavePosX, int cavePosY, Cave cave)
+        {
+            G.DrawLine(pen, cavePosX + 30, cavePosY + 10,
+                cavePosX + 36, cavePosY + 10);
+            G.DrawLine(pen, cavePosX + 30, cavePosY + 10,
+                cavePosX + 30, cavePosY + 15);
+            G.DrawLine(pen, cavePosX + 30, cavePosY + 15,
+                cavePosX + 36, cavePosY + 15);
+            G.DrawLine(pen, cavePosX + 36, cavePosY + 10,
+                cavePosX + 36, cavePosY + 15);
+        }
+
         /// <summary>
         /// Paints corridors of adjacent caves to the cave that is being passed
         /// </summary>
@@ -590,6 +615,40 @@ namespace Mines2._0.Control
                         Thread.Sleep(10000);
                         Environment.Exit(0);
                         break;
+                    case 'Y':
+                        if(player.GetCaveLocation().hasGamblingMachine && player.getTreasureInventory().Count != 0)
+                        {
+                            player.getTreasureInventory().RemoveAt(0);
+                            Random r = new Random();
+                            long numberOfTreasures = r.NextInt64(5) - 1;
+                            if(numberOfTreasures < 0)
+                            {
+                                if(player.getTreasureInventory().Count() != 0)
+                                {
+                                    player.getTreasureInventory().RemoveAt(0);
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"Tough luck! You have lost another treasure. :(", outputTextBox);
+                                }
+                                else
+                                {
+                                    IOManager.getInstance().getOutputStream().writeToTextBox($"Tough luck! You don't win any treasures. :(", outputTextBox);
+                                }
+                            }
+                            else if(numberOfTreasures == 0)
+                            {
+                                IOManager.getInstance().getOutputStream().writeToTextBox($"Tough luck! You don't win any treasures. :(", outputTextBox);
+                            }
+                            else
+                            {
+                                for(int i = 0; i < numberOfTreasures; i++)
+                                {
+                                    player.getTreasureInventory().Add(new Treasure(numberOfTreasuresWon + 18, "another bag full of gold coins"));
+                                    numberOfTreasuresWon++;
+                                }
+                                IOManager.getInstance().getOutputStream().writeToTextBox($"Congratulations! You won " + numberOfTreasures + " more treasures! :)", outputTextBox);
+                            }
+                        }
+                        printCaveInformation();
+                        break;
 
                     default:            // By default any command that is not handled prior to now is not a valid command.
                         IO.getOutputStream().writeToTextBox("I don't recognize that command, " +
@@ -728,6 +787,19 @@ namespace Mines2._0.Control
             if (adjacentCaves[5]?.caveObstacle is not null && adjacentCaves[5].caveObstacle.getLivingStatus())
             {
                 outputStream.writeToTextBox($"The cave up is guarded by a {adjacentCaves[5].caveObstacle.getDescription()}.", outputTextBox);
+            }
+            if (currentCave.hasGamblingMachine)
+            {
+                outputStream.writeToTextBox($"There is a gambling machine in this room.", outputTextBox);
+                if(player.getTreasureInventory().Count == 0)
+                {
+                    outputStream.writeToTextBox($"But you have no treasures to gamble, so you cannot use it.", outputTextBox);
+                }
+                else
+                {
+                    outputStream.writeToTextBox($"If you would like to wage a treasure for a chance to gain more treasures, enter 'Y'.", outputTextBox);
+                    outputStream.writeToTextBox($"Otherwise, continue with your usual gameplay.", outputTextBox);
+                }
             }
         }
         /// <summary>
@@ -869,6 +941,12 @@ namespace Mines2._0.Control
                 descriptions.RemoveAt(descriptionID);
             }
             mine[0].descriptionID = descriptions[0];
+            Random r = new Random();
+            long numberOfGamblingMachines = r.NextInt64(5) + 1;
+            for(int i = 0; i < numberOfGamblingMachines; i++)
+            {
+                mine[r.NextInt64(mine.Length)].hasGamblingMachine = true;
+            }
         }
 
         /// <summary>

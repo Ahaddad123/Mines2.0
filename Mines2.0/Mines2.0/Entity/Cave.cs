@@ -19,15 +19,16 @@ namespace Mines2._0.Entity
 		public string descriptionID;
 
 		public Vector3 position;
+		public bool hasGamblingMachine { get; set; }
 
 		public Cave() : this(0, 0, 0)
 		{
-
+			hasGamblingMachine = false;
 		}
 
 		public Cave(Vector3 position) : this((int)position.X, (int)position.Y, (int)position.Z)
 		{
-
+			hasGamblingMachine = false;
 		}
 
 		public Cave(int x, int y, int z)
@@ -46,6 +47,7 @@ namespace Mines2._0.Entity
 
 			descriptionID = "";
 			treasures = new List<Treasure>();
+			hasGamblingMachine = false;
 		}
 
 		public void removeObstacle(Player player)
