@@ -443,13 +443,13 @@ namespace Mines2._0.Control
         /// </summary>
         public void mapHelp()
         {
-            IO.getOutputStream().writeToTextBox("The game map is displayed in the upper right hand corner. The " +
-                "starting room is outlined in blue. The " +
-                "room you are currently in contains a purple square. Passage wasys to the North, South, East, West are " +
-                "represented as rectangles on either side of the current room. If those passages are blocked by a " +
-                "monster, there is a red x at the rectangle's enterance. Passages Up and Down are represented as " +
-                "triangles in the bottom right corner of the current room. If the triangle is red, that direction " +
-                "is blocked by a monster. Any other symbols appearing in the current room are treasures and weapons " +
+            IO.getOutputStream().writeToTextBox("The game map is displayed in the upper right-hand corner. " +
+                "The starting room is outlined in blue. The room you are currently in contains a purple " +
+                "square. Passage ways to the North, South, East, West are represented as rectangles on " +
+                "either side of the current room. If those passages are blocked by a monster, there is a " +
+                "red x at the rectangle's entrance. Passages Up and Down are represented as triangles in the " +
+                "bottom right corner of the current room. If the triangle is red, that direction is blocked " +
+                "by a monster. Any other symbols appearing in the current room are treasures and weapons " +
                 "that can be picked up." + Environment.NewLine, outputTextBox);
         }
 
