@@ -429,12 +429,21 @@ namespace Mines2._0.Control
         /// <param name="textBox">Textbox to write to</param>
 		public void listCommands()
         {
-            IO.getOutputStream().writeToTextBox("Commands in the game are \"N\", \"E\", \"S\", \"W\", \"U\", and " +
-            "\"D\" to move North, East, South, West, Up, or Down, " +
-            "respectively.  Other commands are \"C\" to carry things, \"L\" to leave items," +
-            " \"K\" to leave treasures, \"P\" to " +
-            "get the points you\'ve scored, \"O\" for help getting out of the " +
-            "mine, \"H\" for help, and \"Q\" to quit." + Environment.NewLine, outputTextBox);
+            IO.getOutputStream().writeToTextBox("Commands in the game are as follows..." + Environment.NewLine +
+                "\"N\" - move to the North" + Environment.NewLine +
+                "\"S\" - move to the South" + Environment.NewLine +
+                "\"E\" - move to the East" + Environment.NewLine +
+                "\"W\" - move to the West" + Environment.NewLine +
+                "\"U\" - move Up a level" + Environment.NewLine +
+                "\"D\" - move Down a level" + Environment.NewLine +
+                "\"C\" - carry all items in the current room" + Environment.NewLine +
+                "\"L\" - leave an item in the current room" + Environment.NewLine +
+                "\"K\" - leave a treasure in the current room" + Environment.NewLine +
+                "\"P\" - prints player's current score" + Environment.NewLine +
+                //"\"O\" - shows path out of mine" + Environment.NewLine +
+                "\"H\" - displays help menu" + Environment.NewLine +
+                "\"Y\" - say yes to gambling machine" + Environment.NewLine +
+                "\"Q\" - quite the game" + Environment.NewLine, outputTextBox);
         }
 
         //jasmine added
