@@ -20,31 +20,36 @@ namespace Mines2._0.GameForms
 			InitializeComponent();
 			controller = new MinesController(consoleTextBox, userInputTextBox, turnLabel);
 			IO = IOManager.getInstance();
-			turnLabel.Text = "Turn " + controller.playerTurns.ToString();
+			turnLabel.Text = controller.playerTurns.ToString();
+			pictureBox1.ImageLocation = @"DougUnicorn.png";
+			pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+			pictureBox2.ImageLocation = @"DougUnicorn.png";
+			pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+			controller.displayHelp(); // jasmine added to have commands displayed at beginning of game
 			IO.getOutputStream().writeToTextBox("Enter the maximum number of turns to spend in the mine.", consoleTextBox);
 		}
-		/// <summary>
-		///  Handles where the map panel should be located when a user presses
-		///  a button.If the map is at the back, bring it to the front
-		/// </summary>
-		/// <param name="sender"></param>
-		/// <param name="e"></param>
-		private void mapButton_Click(object sender, EventArgs e)
-		{
-			if (mapInFront)
-			{
-				consoleBox.BringToFront();
-				consoleBox.Size = new Size(mapBox.Width, mapBox.Bounds.Height);
-				consoleBox.Location = new Point(mapBox.Location.X, mapBox.Location.Y);
-				mapInFront = false;
-			}
-			else
-			{
-				//mapBox.BringToFront();
-				RedrawSmallConsoleBox();
-				mapInFront = true;
-			}
-		}
+		///// <summary>
+		/////  Handles where the map panel should be located when a user presses
+		/////  a button.If the map is at the back, bring it to the front
+		///// </summary>
+		///// <param name="sender"></param>
+		///// <param name="e"></param>
+		//private void mapButton_Click(object sender, EventArgs e)    Removed by Jasmine
+		//{
+		//	if (mapInFront)
+		//	{
+		//		consoleBox.BringToFront();
+		//		consoleBox.Size = new Size(mapBox.Width, mapBox.Bounds.Height);
+		//		consoleBox.Location = new Point(mapBox.Location.X, mapBox.Location.Y);
+		//		mapInFront = false;
+		//	}
+		//	else
+		//	{
+		//		//mapBox.BringToFront();
+		//		RedrawSmallConsoleBox();
+		//		mapInFront = true;
+		//	}
+		//}
 		/// <summary>
 		/// Responsible for drawing the lines on the map for showing the rooms
 		/// </summary>
@@ -84,7 +89,7 @@ namespace Mines2._0.GameForms
 						controller.outputRoomInfo();
 					if (controller.playerTurns >= controller.maximumPlayerTurns)
 					{
-						turnLabel.Text = "Turn " + controller.playerTurns.ToString();
+						turnLabel.Text = controller.playerTurns.ToString();
 						turnLabel.Refresh();
 						IOManager.getInstance().getOutputStream().writeToTextBox(Environment.NewLine, consoleTextBox);
 						IOManager.getInstance().getOutputStream().writeToTextBox("After spending too many turns in the mine, your free trial of life has ended!", consoleTextBox);
@@ -94,7 +99,7 @@ namespace Mines2._0.GameForms
 						Thread.Sleep(10000);
 						Environment.Exit(0);
 					}
-					inventoryBox.Text = controller.getPlayerTreasures();
+					treasureBox.Text = controller.getPlayerTreasures();
 				}
 				e.Handled = true;	
 				e.SuppressKeyPress = true;
@@ -102,13 +107,14 @@ namespace Mines2._0.GameForms
 			}
 			if (controller.getPlayer() != null)
 			{
-				inventoryBox.Items.Clear();
-				inventoryBox.Items.Add("TREASURES");
-				inventoryBox.Items.AddRange(controller.getPlayer().getTreasureList().Select(x => x.getDescription()).ToArray());
-				inventoryBox.Items.Add("ITEMS");
-				inventoryBox.Items.AddRange(controller.getPlayer().getItemList().Select(x => x.getDescription()).ToArray());
+				treasureBox.Items.Clear();
+				treasureBox.Items.Add("TREASURES");
+				treasureBox.Items.AddRange(controller.getPlayer().getTreasureList().Select(x => x.getDescription()).ToArray());
+				weaponBox.Items.Clear();
+				weaponBox.Items.Add("ITEMS");
+				weaponBox.Items.AddRange(controller.getPlayer().getItemList().Select(x => x.getDescription()).ToArray());
 			}
-			turnLabel.Text = "Turn " + controller.playerTurns.ToString();
+			turnLabel.Text = controller.playerTurns.ToString();
 			this.Refresh();
 		}
 		/// <summary>
@@ -179,20 +185,20 @@ namespace Mines2._0.GameForms
 				e.SuppressKeyPress = true;
 			}
 		}
+		//removed by Jasmine Unneeded
+		//private void GameView_Resize(object sender, EventArgs e)
+		//{
+		//	//Force redraw
+		//	mapBox.Invalidate();
+		//	consoleBox.Invalidate();
+		//	if (mapInFront)
+		//		RedrawSmallConsoleBox();
+		//}
+		//private void RedrawSmallConsoleBox()
+		//{
+		//	consoleBox.Size = new Size(mapBox.Width, mapBox.Bounds.Height / 6);
+		//	consoleBox.Location = new Point(mapBox.Location.X, mapBox.Location.Y + mapBox.Height - (mapBox.Bounds.Height / 6));
 
-		private void GameView_Resize(object sender, EventArgs e)
-		{
-			//Force redraw
-			mapBox.Invalidate();
-			consoleBox.Invalidate();
-			if(mapInFront)
-				RedrawSmallConsoleBox();
-		}
-		private void RedrawSmallConsoleBox()
-		{	
-			consoleBox.Size = new Size(mapBox.Width, mapBox.Bounds.Height / 6);
-			consoleBox.Location = new Point(mapBox.Location.X, mapBox.Location.Y + mapBox.Height - (mapBox.Bounds.Height / 6));
-
-		}
+		//}
 	}
 }

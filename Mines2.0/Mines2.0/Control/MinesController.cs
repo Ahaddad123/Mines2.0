@@ -404,12 +404,28 @@ namespace Mines2._0.Control
         /// <param name="textBox">Textbox to write to</param>
 		public void listCommands()
         {
-            IO.getOutputStream().writeToTextBox("\nCommands in the game are \"N\", \"E\", \"S\", \"W\", \"U\", and " +
+            IO.getOutputStream().writeToTextBox("Commands in the game are \"N\", \"E\", \"S\", \"W\", \"U\", and " +
             "\"D\" to move North, East, South, West, Up, or Down, " +
             "respectively.  Other commands are \"C\" to carry things, \"L\" to leave items," +
             " \"K\" to leave treasures, \"P\" to " +
             "get the points you\'ve scored, \"O\" for help getting out of the " +
-            "mine, \"H\" for help, and \"Q\" to quit.\n", outputTextBox);
+            "mine, \"H\" for help, and \"Q\" to quit." + Environment.NewLine, outputTextBox);
+        }
+
+        //jasmine added
+        /// <summary>
+        /// Outputs what symbols on map mean
+        /// </summary>
+        public void mapHelp()
+        {
+            IO.getOutputStream().writeToTextBox("The game map is displayed in the upper right hand corner. The " +
+                "starting room is outlined in blue. The " +
+                "room you are currently in contains a purple square. Passage wasys to the North, South, East, West are " +
+                "represented as rectangles on either side of the current room. If those passages are blocked by a " +
+                "monster, there is a red x at the rectangle's enterance. Passages Up and Down are represented as " +
+                "triangles in the bottom right corner of the current room. If the triangle is red, that direction " +
+                "is blocked by a monster. Any other symbols appearing in the current room are treasures and weapons " +
+                "that can be picked up." + Environment.NewLine, outputTextBox);
         }
 
 
@@ -419,18 +435,19 @@ namespace Mines2._0.Control
         /// <param name="textBox">Textbox to be written to</param>
         public void displayHelp()
         {
-            listCommands();
-
             IO.getOutputStream().writeToTextBox("In a mine, the passages are straight.  So, for example, if " +
             "you go North to leave a room, you can go South to reenter it. " +
             "The rooms are not evenly spaced.  However, the distance between " +
             "adjacent rooms is always a multiple of the minimum distance " +
             "between adjacent rooms." + Environment.NewLine, outputTextBox);
+
+            mapHelp(); //jasmine added
+            listCommands(); //jasmine switched to after instead of before the above
         }
 
 
         /// <summary>
-        /// Prints the list of weapons in the specific room.
+        /// Prints the list of Treasures in the specific room.
         /// </summary>
         /// <param name="textBox">Text box to write to</param>
         /// <param name="roomNum">Room number to print treasures of</param>
