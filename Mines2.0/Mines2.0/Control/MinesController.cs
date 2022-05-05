@@ -512,6 +512,7 @@ namespace Mines2._0.Control
             if (userCommand.Length > 1)
             {
                 IO.getOutputStream().writeToTextBox("Invalid command, please enter a single character.", outputTextBox);
+                printCaveInformation();
             }
             else
             {
