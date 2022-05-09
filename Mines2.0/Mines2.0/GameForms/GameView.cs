@@ -95,9 +95,17 @@ namespace Mines2._0.GameForms
 						IOManager.getInstance().getOutputStream().writeToTextBox("After spending too many turns in the mine, your free trial of life has ended!", consoleTextBox);
 						IOManager.getInstance().getOutputStream().writeToTextBox("Thanks for playing! Here are your results: ", consoleTextBox);
 						controller.Points();
-						IOManager.getInstance().getOutputStream().writeToTextBox("Game will close automatically in 10 seconds", consoleTextBox);
-						Thread.Sleep(10000);
-						Environment.Exit(0);
+						IOManager.getInstance().getOutputStream().writeToTextBox("If you want to restart then type r.", consoleTextBox);
+						char command = IOManager.getInstance().getInputStream().readCharInput();
+						if (command != 'r')
+						{
+							Environment.Exit(0);
+						}
+						else 
+						{
+							controller = new MinesController(consoleTextBox, userInputTextBox, turnLabel);
+							GetSeedFromUser(sender, e);
+						}
 					}
 					treasureBox.Text = controller.getPlayerTreasures();
 				}
