@@ -21,9 +21,9 @@ namespace Mines2._0.GameForms
 			controller = new MinesController(consoleTextBox, userInputTextBox, turnLabel);
 			IO = IOManager.getInstance();
 			turnLabel.Text = controller.playerTurns.ToString();
-			pictureBox1.ImageLocation = @"DougUnicorn.png";
+			pictureBox1.ImageLocation = @"Mines2.0\DougUnicorn.png";
 			pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-			pictureBox2.ImageLocation = @"DougUnicorn.png";
+			pictureBox2.ImageLocation = @"Mines2.0\DougUnicorn.png";
 			pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
 			controller.displayHelp(); // jasmine added to have commands displayed at beginning of game
 			IO.getOutputStream().writeToTextBox("Enter the maximum number of turns to spend in the mine.", consoleTextBox);
