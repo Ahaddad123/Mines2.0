@@ -30,6 +30,7 @@ namespace Mines2._0.GameForms
 		/// </summary>
 		private void InitializeComponent()
 		{
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GameView));
             this.label1 = new System.Windows.Forms.Label();
             this.userInputTextBox = new System.Windows.Forms.TextBox();
             this.treasureBox = new System.Windows.Forms.ListBox();
@@ -63,10 +64,10 @@ namespace Mines2._0.GameForms
             // userInputTextBox
             // 
             this.userInputTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.userInputTextBox.Location = new System.Drawing.Point(142, 638);
+            this.userInputTextBox.Location = new System.Drawing.Point(150, 651);
             this.userInputTextBox.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.userInputTextBox.Name = "userInputTextBox";
-            this.userInputTextBox.Size = new System.Drawing.Size(333, 27);
+            this.userInputTextBox.Size = new System.Drawing.Size(312, 27);
             this.userInputTextBox.TabIndex = 2;
             this.userInputTextBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.userInputTextBox_KeyDown);
             // 
@@ -87,7 +88,7 @@ namespace Mines2._0.GameForms
             // 
             this.turnLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.turnLabel.AutoSize = true;
-            this.turnLabel.Location = new System.Drawing.Point(578, 641);
+            this.turnLabel.Location = new System.Drawing.Point(576, 654);
             this.turnLabel.Name = "turnLabel";
             this.turnLabel.Size = new System.Drawing.Size(50, 20);
             this.turnLabel.TabIndex = 6;
@@ -121,7 +122,7 @@ namespace Mines2._0.GameForms
             // 
             this.inputLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.inputLabel.AutoSize = true;
-            this.inputLabel.Location = new System.Drawing.Point(28, 641);
+            this.inputLabel.Location = new System.Drawing.Point(27, 654);
             this.inputLabel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.inputLabel.Name = "inputLabel";
             this.inputLabel.Size = new System.Drawing.Size(119, 20);
@@ -132,7 +133,7 @@ namespace Mines2._0.GameForms
             // 
             this.moveLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.moveLabel.AutoSize = true;
-            this.moveLabel.Location = new System.Drawing.Point(484, 641);
+            this.moveLabel.Location = new System.Drawing.Point(482, 654);
             this.moveLabel.Margin = new System.Windows.Forms.Padding(1, 0, 1, 0);
             this.moveLabel.Name = "moveLabel";
             this.moveLabel.Size = new System.Drawing.Size(96, 20);
@@ -156,6 +157,7 @@ namespace Mines2._0.GameForms
             // pictureBox1
             // 
             this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.ErrorImage = ((System.Drawing.Image)(resources.GetObject("pictureBox1.ErrorImage")));
             this.pictureBox1.Location = new System.Drawing.Point(1036, 6);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(1);
             this.pictureBox1.Name = "pictureBox1";
@@ -165,6 +167,7 @@ namespace Mines2._0.GameForms
             // 
             // pictureBox2
             // 
+            this.pictureBox2.ErrorImage = ((System.Drawing.Image)(resources.GetObject("pictureBox2.ErrorImage")));
             this.pictureBox2.Location = new System.Drawing.Point(27, 6);
             this.pictureBox2.Margin = new System.Windows.Forms.Padding(1);
             this.pictureBox2.Name = "pictureBox2";
