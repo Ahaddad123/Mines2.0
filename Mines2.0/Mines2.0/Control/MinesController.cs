@@ -20,7 +20,7 @@ namespace Mines2._0.Control
         private Cave[] mine;
         private int caveSeed;
         private Player player;
-        public int playerTurns { get; private set; }
+        public int playerTurns { get; set; }
         public int maximumPlayerTurns { get;  set; }
         private static GameData data = new GameData();
         private TextBox outputTextBox;
@@ -514,6 +514,21 @@ namespace Mines2._0.Control
                 IO.getOutputStream().writeToTextBox("Invalid command, please enter a single character.", outputTextBox);
                 printCaveInformation();
             }
+            else if(playerTurns >= maximumPlayerTurns)
+            {
+                if(userCommand == "r")
+                {
+                    IO.getOutputStream().writeToTextBox($"Enter the maximum number of turns to spend in the mine.", outputTextBox);
+                    playerTurns = 0;
+                    caveSeed = -1;
+                    numberOfTreasuresWon = 0;
+                    maximumPlayerTurns = 0;
+                }
+                else
+                {
+                    Environment.Exit(0);
+                }
+            }
             else
             {
                 char command = userCommand[0];
@@ -682,6 +697,12 @@ namespace Mines2._0.Control
                             }
                             printCaveInformation();
                             break;
+                        //case 'r':
+                        //    playerTurns = 0;
+                        //    caveSeed = -1;
+                        //    numberOfTreasuresWon = 0;
+                        //    IO.getOutputStream().writeToTextBox($"Enter the maximum number of turns to spend in the mine.", outputTextBox);
+                        //    break;
 
                         default:            // By default any command that is not handled prior to now is not a valid command.
                             IO.getOutputStream().writeToTextBox("I don't recognize that command, " +
@@ -787,52 +808,63 @@ namespace Mines2._0.Control
         /// </summary>
         public void printCaveInformation()
         {
-            Cave currentCave = player.GetCaveLocation();
-            Cave[] adjacentCaves = currentCave.getAdjacentCaves();
-            Outputable outputStream = IOManager.getInstance().getOutputStream();
-            foreach (Item item in currentCave.items)
+            if(playerTurns >= maximumPlayerTurns)
             {
-                outputStream.writeToTextBox($"There is a {item.getDescription()} here.", outputTextBox);
+                IOManager.getInstance().getOutputStream().writeToTextBox(Environment.NewLine, outputTextBox);
+                IOManager.getInstance().getOutputStream().writeToTextBox("After spending too many turns in the mine, your free trial of life has ended!", outputTextBox);
+                IOManager.getInstance().getOutputStream().writeToTextBox("Thanks for playing! Here are your results: ", outputTextBox);
+                Points();
+                IOManager.getInstance().getOutputStream().writeToTextBox("If you want to restart then type r.", outputTextBox);
             }
-            foreach (Treasure treasure in currentCave.treasures)
+            else
             {
-                outputStream.writeToTextBox($"There is a {treasure.getDescription()} here.", outputTextBox);
-            }
-            if (adjacentCaves[0]?.caveObstacle is not null && adjacentCaves[0].caveObstacle.getLivingStatus())
-            {
-                outputStream.writeToTextBox($"The cave west is guarded by a {adjacentCaves[0].caveObstacle.getDescription()}.", outputTextBox);
-            }
-            if (adjacentCaves[1]?.caveObstacle is not null && adjacentCaves[1].caveObstacle.getLivingStatus())
-            {
-                outputStream.writeToTextBox($"The cave east is guarded by a {adjacentCaves[1].caveObstacle.getDescription()}.", outputTextBox);
-            }
-            if (adjacentCaves[2]?.caveObstacle is not null && adjacentCaves[2].caveObstacle.getLivingStatus())
-            {
-                outputStream.writeToTextBox($"The cave south is guarded by a {adjacentCaves[2].caveObstacle.getDescription()}.", outputTextBox);
-            }
-            if (adjacentCaves[3]?.caveObstacle is not null && adjacentCaves[3].caveObstacle.getLivingStatus())
-            {
-                outputStream.writeToTextBox($"The cave north is guarded by a {adjacentCaves[3].caveObstacle.getDescription()}.", outputTextBox);
-            }
-            if (adjacentCaves[4]?.caveObstacle is not null && adjacentCaves[4].caveObstacle.getLivingStatus())
-            {
-                outputStream.writeToTextBox($"The cave down is guarded by a {adjacentCaves[4].caveObstacle.getDescription()}.", outputTextBox);
-            }
-            if (adjacentCaves[5]?.caveObstacle is not null && adjacentCaves[5].caveObstacle.getLivingStatus())
-            {
-                outputStream.writeToTextBox($"The cave up is guarded by a {adjacentCaves[5].caveObstacle.getDescription()}.", outputTextBox);
-            }
-            if (currentCave.hasGamblingMachine)
-            {
-                outputStream.writeToTextBox($"There is a gambling machine in this room.", outputTextBox);
-                if(player.getTreasureInventory().Count == 0)
+                Cave currentCave = player.GetCaveLocation();
+                Cave[] adjacentCaves = currentCave.getAdjacentCaves();
+                Outputable outputStream = IOManager.getInstance().getOutputStream();
+                foreach (Item item in currentCave.items)
                 {
-                    outputStream.writeToTextBox($"But you have no treasures to gamble, so you cannot use it.", outputTextBox);
+                    outputStream.writeToTextBox($"There is a {item.getDescription()} here.", outputTextBox);
                 }
-                else
+                foreach (Treasure treasure in currentCave.treasures)
                 {
-                    outputStream.writeToTextBox($"If you would like to wage a treasure for a chance to gain more treasures, enter 'Y'.", outputTextBox);
-                    outputStream.writeToTextBox($"Otherwise, continue with your usual gameplay.", outputTextBox);
+                    outputStream.writeToTextBox($"There is a {treasure.getDescription()} here.", outputTextBox);
+                }
+                if (adjacentCaves[0]?.caveObstacle is not null && adjacentCaves[0].caveObstacle.getLivingStatus())
+                {
+                    outputStream.writeToTextBox($"The cave west is guarded by a {adjacentCaves[0].caveObstacle.getDescription()}.", outputTextBox);
+                }
+                if (adjacentCaves[1]?.caveObstacle is not null && adjacentCaves[1].caveObstacle.getLivingStatus())
+                {
+                    outputStream.writeToTextBox($"The cave east is guarded by a {adjacentCaves[1].caveObstacle.getDescription()}.", outputTextBox);
+                }
+                if (adjacentCaves[2]?.caveObstacle is not null && adjacentCaves[2].caveObstacle.getLivingStatus())
+                {
+                    outputStream.writeToTextBox($"The cave south is guarded by a {adjacentCaves[2].caveObstacle.getDescription()}.", outputTextBox);
+                }
+                if (adjacentCaves[3]?.caveObstacle is not null && adjacentCaves[3].caveObstacle.getLivingStatus())
+                {
+                    outputStream.writeToTextBox($"The cave north is guarded by a {adjacentCaves[3].caveObstacle.getDescription()}.", outputTextBox);
+                }
+                if (adjacentCaves[4]?.caveObstacle is not null && adjacentCaves[4].caveObstacle.getLivingStatus())
+                {
+                    outputStream.writeToTextBox($"The cave down is guarded by a {adjacentCaves[4].caveObstacle.getDescription()}.", outputTextBox);
+                }
+                if (adjacentCaves[5]?.caveObstacle is not null && adjacentCaves[5].caveObstacle.getLivingStatus())
+                {
+                    outputStream.writeToTextBox($"The cave up is guarded by a {adjacentCaves[5].caveObstacle.getDescription()}.", outputTextBox);
+                }
+                if (currentCave.hasGamblingMachine)
+                {
+                    outputStream.writeToTextBox($"There is a gambling machine in this room.", outputTextBox);
+                    if (player.getTreasureInventory().Count == 0)
+                    {
+                        outputStream.writeToTextBox($"But you have no treasures to gamble, so you cannot use it.", outputTextBox);
+                    }
+                    else
+                    {
+                        outputStream.writeToTextBox($"If you would like to wage a treasure for a chance to gain more treasures, enter 'Y'.", outputTextBox);
+                        outputStream.writeToTextBox($"Otherwise, continue with your usual gameplay.", outputTextBox);
+                    }
                 }
             }
         }
