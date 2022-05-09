@@ -86,22 +86,10 @@ namespace Mines2._0.GameForms
 					controller.parseCommand(sample);
 					if (Char.ToUpper(sample[0]) != 'Q' && !controller.dropItemFlag && !controller.dropTreasureFlag)
 						controller.outputRoomInfo();
-					//if (controller.playerTurns >= controller.maximumPlayerTurns)
-					//{
-						//turnLabel.Text = controller.playerTurns.ToString();
-						//turnLabel.Refresh();
-						//IOManager.getInstance().getOutputStream().writeToTextBox(Environment.NewLine, consoleTextBox);
-						//IOManager.getInstance().getOutputStream().writeToTextBox("After spending too many turns in the mine, your free trial of life has ended!", consoleTextBox);
-						//IOManager.getInstance().getOutputStream().writeToTextBox("Thanks for playing! Here are your results: ", consoleTextBox);
-						//controller.Points();
-						//IOManager.getInstance().getOutputStream().writeToTextBox("If you want to restart then type r.", consoleTextBox);
-						//GetPlayAgainFromUser(sender, e);
-					//}
 					treasureBox.Text = controller.getPlayerTreasures();
 				}
 				e.Handled = true;	
 				e.SuppressKeyPress = true;
-	
 			}
 			if (controller.getPlayer() != null)
 			{
@@ -177,32 +165,6 @@ namespace Mines2._0.GameForms
 						controller.maximumPlayerTurns = controller.convertToInt(sample);
 						IO.getOutputStream().writeToTextBox("Enter Mine Number.", consoleTextBox);
 					}
-
-				}
-				e.Handled = true;
-				e.SuppressKeyPress = true;
-			}
-		}
-
-		private void GetPlayAgainFromUser(object sender, KeyEventArgs e)
-		{
-			// -------- The first command must be a valid mine number for seeding cave generator -------- \\
-
-			if (e.KeyCode == Keys.Enter)
-			{
-				if (userInputTextBox.Text.Length > 0)
-				{
-					String sample = IO.getInputStream().readTextBox(userInputTextBox);
-					IO.getOutputStream().writeToTextBox(sample, consoleTextBox);
-
-					if (sample == "r")
-                    {
-						controller = new MinesController(consoleTextBox, userInputTextBox, turnLabel);
-					} 
-					else
-                    {
-						//Environment.Exit(0);
-                    }
 
 				}
 				e.Handled = true;
