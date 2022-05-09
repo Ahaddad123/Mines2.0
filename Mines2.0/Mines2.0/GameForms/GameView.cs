@@ -96,8 +96,8 @@ namespace Mines2._0.GameForms
 						IOManager.getInstance().getOutputStream().writeToTextBox("Thanks for playing! Here are your results: ", consoleTextBox);
 						controller.Points();
 						IOManager.getInstance().getOutputStream().writeToTextBox("If you want to restart then type r.", consoleTextBox);
-						char command = IOManager.getInstance().getInputStream().readCharInput();
-						if (command != 'r')
+						string command = IOManager.getInstance().getInputStream().readLineInput();
+						if (command != "r")
 						{
 							Environment.Exit(0);
 						}
