@@ -84,7 +84,7 @@ namespace Mines2._0.GameForms
 					String sample = IO.getInputStream().readTextBox(userInputTextBox);
 					IO.getOutputStream().writeToTextBox(sample, consoleTextBox);
 					controller.parseCommand(sample);
-					if (Char.ToUpper(sample[0]) != 'Q' && !controller.dropItemFlag && !controller.dropTreasureFlag)
+					if (Char.ToUpper(sample[0]) != 'Q' && !controller.dropItemFlag && !controller.dropTreasureFlag && controller.playerTurns != 0)
 						controller.outputRoomInfo();
 					treasureBox.Text = controller.getPlayerTreasures();
 				}

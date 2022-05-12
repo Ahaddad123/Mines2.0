@@ -388,8 +388,11 @@ namespace Mines2._0.Control
                     message += ", Down";
             }
 
-            IO.getOutputStream().writeToTextBox(message, outputTextBox);
-            IO.getOutputStream().writeToTextBox(player.GetCaveLocation().descriptionID, outputTextBox);
+            if (playerTurns != maximumPlayerTurns) {
+                IO.getOutputStream().writeToTextBox(message, outputTextBox);
+                IO.getOutputStream().writeToTextBox(player.GetCaveLocation().descriptionID, outputTextBox);
+            }
+            
         }
 
 
