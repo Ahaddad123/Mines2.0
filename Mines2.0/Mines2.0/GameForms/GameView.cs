@@ -11,7 +11,7 @@ namespace Mines2._0.GameForms
 	{
 		private IOManager IO;
 		private MinesController controller;
-		private const int MIN_PLAYER_MAX_TURNS = 1;
+		private const int MIN_PLAYER_MAX_TURNS = 30;
 		/// <summary>
 		/// Default constructor for 
 		/// </summary>
