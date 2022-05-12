@@ -1010,7 +1010,7 @@ namespace Mines2._0.Control
                 descriptions.RemoveAt(descriptionID);
             }
             mine[0].descriptionID = descriptions[0];
-            Random r = new Random();
+            Random r = new Random(seed);
             long numberOfGamblingMachines = r.NextInt64(5) + 1;
             for(int i = 0; i < numberOfGamblingMachines; i++)
             {
