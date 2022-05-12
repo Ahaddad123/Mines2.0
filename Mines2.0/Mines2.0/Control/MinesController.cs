@@ -817,7 +817,7 @@ namespace Mines2._0.Control
                 IOManager.getInstance().getOutputStream().writeToTextBox("After spending too many turns in the mine, your free trial of life has ended!", outputTextBox);
                 IOManager.getInstance().getOutputStream().writeToTextBox("Thanks for playing! Here are your results: ", outputTextBox);
                 Points();
-                IOManager.getInstance().getOutputStream().writeToTextBox("If you want to restart then type r.", outputTextBox);
+                IOManager.getInstance().getOutputStream().writeToTextBox("If you want to restart then type r. Type anything else to quit the game.", outputTextBox);
             }
             else
             {
