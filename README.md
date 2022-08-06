@@ -1,8 +1,8 @@
 # SE3860 Spring2022
 
-Team04: Dougletts 
+Team02 
 
-Members: Brian Rodenkirch, Evan Thiry, Jackson Hemming, Ryan Cherry, Timothy Facklam 
+Members: Andrew H, Makenna H, Jasmine K, Alex B
 
 Program Title: Mines2.0
 
