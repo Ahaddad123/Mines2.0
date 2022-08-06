@@ -1,7 +1,5 @@
 # SE3860 Spring2022
 
-Team02 
-
 Members: Andrew H, Makenna H, Jasmine K, Alex B
 
 Program Title: Mines2.0
